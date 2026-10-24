@@ -23,4 +23,4 @@ public void quitDriver(Scenario scenario) {
 	Setup.getDriver().quit();
 	Setup.getLogger().info("Scenario:" + scenario.getName() + "- Finished" + scenario.getStatus());
 }
-}ss
+}

@@ -25,7 +25,8 @@ import io.cucumber.java.Scenario;
  *
  * If no parameter is provided, chrome will be used by default
  *
- * Alogger is also available to track scenario status and driver initialization.
+ * A logger is also available to track scenario status and driver
+ * initialization.
  */
 public class Setup {
 	private static WebDriver driver;
@@ -43,18 +44,18 @@ public class Setup {
 			ChromeOptions chromeOptions = new ChromeOptions();
 			chromeOptions.addArguments("--start-maximized");
 			chromeOptions.addArguments("--remote-allow-origins=*");
-			chromeOptions.addArguments("disable-infobars");// disabling infosbars 
-			
-			chromeOptions.addArguments("--disable-extensions");//disabling extensions
-			chromeOptions.addArguments("--disable-gpu");//applicable to windows os only 
-			chromeOptions.addArguments("--disable-dev-shm-usage");// overcome limited ressouce problems 
+			chromeOptions.addArguments("disable-infobars");// disabling infosbars
+
+			chromeOptions.addArguments("--disable-extensions");// disabling extensions
+			chromeOptions.addArguments("--disable-gpu");// applicable to windows os only
+			chromeOptions.addArguments("--disable-dev-shm-usage");// overcome limited ressouce problems
 			chromeOptions.addArguments("--no-sandbox"); // Bypass OS security model
 			chromeOptions.addArguments("--remote-allow-origins=*");
 			chromeOptions.addArguments("--disable-logging");
 			chromeOptions.addArguments("--log-level=3");
 			chromeOptions.addArguments("--remote-debugging-pipe");
-			//chromeOptions.addArguments("--headless=new");
-			//chromeOptions.addArguments("force-device-scale-facor=0.75");
+			// chromeOptions.addArguments("--headless=new");
+			// chromeOptions.addArguments("force-device-scale-facor=0.75");
 			driver = new ChromeDriver(chromeOptions);
 			break;
 		case "firefox":
