@@ -5,17 +5,45 @@ pipeline {
     options {
         timestamps()
         timeout(time: 30, unit: 'MINUTES')
-        buildDiscarder(logRotator(numToKeepStr: '20'))
+        buildDiscarder(logRotator(numToKeepStr: '10'))
     }
 
     stages {
 
         stage('Checkout') {
             steps {
+                echo 'Checking out source code...'
                 checkout scm
             }
         }
 
         stage('Build') {
             steps {
-                echo 'Building project...
+                echo 'Building project...'
+                sh 'mvn clean compile -DskipTests'
+            }
+        }
+
+        stage('Run Selenium Cucumber Tests') {
+            steps {
+                echo 'Running Selenium and Cucumber tests...'
+                sh 'mvn test'
+            }
+        }
+    }
+
+    post {
+        always {
+            junit testResults: '**/target/surefire-reports/*.xml',
+                  allowEmptyResults: true
+        }
+
+        success {
+            echo 'Pipeline executed successfully!'
+        }
+
+        failure {
+            echo 'Pipeline failed. Check Console Output.'
+        }
+    }
+}
