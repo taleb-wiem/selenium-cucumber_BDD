@@ -50,7 +50,7 @@ import static io.cucumber.junit.CucumberOptions.SnippetType.CAMELCASE;
 		/**
 		 * Executes only scenarios or features with the specified tag.
 		 */
-		tags = ("@login"),
+		tags = ("@tr"),
 
 		/**
 		 * Removes unnecessary characters from the console output, making it more

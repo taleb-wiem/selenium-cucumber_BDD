@@ -1,4 +1,5 @@
 package com.e2eTest.automation.page_objects;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
@@ -25,6 +26,12 @@ private static WebElement loginBarMenu;
 	@FindBy(how = How.XPATH, using = "//a[normalize-space()='ziedhannachi0@gmail.com']")
 	private static WebElement homePage ;
 	
+	@FindBy(how = How.XPATH, using = "//a[normalize-space()='Log out']")
+	private static WebElement logoutButton ;
+	
+	@FindBy(how = How.XPATH, using = "//a[normalize-space()='Log out']")
+	private static WebElement errorMessage ;
+	
 	
 	public LoginPage() {
 		super(Setup.getDriver());
@@ -47,8 +54,15 @@ private static WebElement loginBarMenu;
 	}
 			public static WebElement getHomePage() {
 				return homePage;
+				
+				
 		
 	}
+			public static WebElement getLogoutButton() {
+			    return Setup.getDriver().findElement(By.cssSelector(".validation-summary-errors"));
+			}
 
-
-	}
+			public static WebElement getErrorMessage() {
+				return errorMessage;
+			}
+}

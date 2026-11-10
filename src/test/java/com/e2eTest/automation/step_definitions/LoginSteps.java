@@ -1,9 +1,8 @@
 package com.e2eTest.automation.step_definitions;
-
-import org.junit.jupiter.api.Assertions;
 import com.e2eTest.automation.page_objects.LoginPage;
+import com.e2eTest.automation.utils.ActionsUtils;
 import com.e2eTest.automation.utils.ConfigFileReader;
-import com.e2eTest.automation.utils.Setup;
+import com.e2eTest.automation.utils.Validations;
 
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -12,36 +11,58 @@ import io.cucumber.java.en.When;
 public class LoginSteps {
 	LoginPage loginPage = new LoginPage();
 	ConfigFileReader configFileReader = new ConfigFileReader();
-
+    ActionsUtils actionsUtils = new ActionsUtils();
+	Validations validations = new Validations(); 
+   
 	@Given("Je me connecte sur le site Web Demo Shop")
 	public void jeMeConnecteSurLeSiteWebDemoShop() {
-		Setup.getDriver().get(configFileReader.getProperty("home.url"));
+		actionsUtils.get(configFileReader.getProperty("home.url"));
 
 	}
 
 	@When("Je clique sur le bouton Log in")
 	public void jeCliqueSurLeBoutonLogIn() {
-		LoginPage.getLoginBarMenu().click();
+	actionsUtils.click(LoginPage.getLoginBarMenu());
 	}
 
 	@When("Je saisis une adresse mail")
 	public void jeSaisisUneAdresseMail() {
-		LoginPage.getEmailField().sendKeys(configFileReader.getProperty("home.email"));
+		actionsUtils.writeText(LoginPage.getEmailField(), configFileReader.getProperty("home.email"));
 	}
 
 	@When("Je saisis un mot de passe")
 	public void jeSaisisUnMotDePasse() {
-		LoginPage.getpassword().sendKeys(configFileReader.getProperty("home.password"));
+		actionsUtils.writeText(LoginPage.getpassword(), configFileReader.getProperty("home.password"));
 	}
 
 	@When("Je clique sur le bouton Login")
 	public void jeCliqueSurLeBoutonLogin() {
-		LoginPage.getLoginButton().click();
+		
+		actionsUtils.click(LoginPage.getLoginButton());
+		
 	}
 
 	@Then("Je me redirige vers la page home {string}")
 	public void jeMeRedirigeVersLaPageHome(String email) throws InterruptedException {
-		String homePage = LoginPage.getHomePage().getText();
-		Assertions.assertEquals(homePage, email);
+		
+		validations.assertEquals(LoginPage.getHomePage(),email);
 	}
+	
+
+	@When("Je saisis une adresse mail {string}")
+	public void jeSaisisUneAdresseMail(String string) {
+	   actionsUtils.writeText(LoginPage.getEmailField(), "wiemtaleb2212@gmail.com");
+	}
+	@When("Je saisis un mot de passe {string}")
+	public void jeSaisisUnMotDePasse(String string) {
+		actionsUtils.writeText(LoginPage.getpassword(),"wiem123");
+	}
+	@Then("Je visualise le message d'erreur {string}")
+	public void jeVisualiseLeMessageDErreur(String string) {
+		 validations.assertEquals(LoginPage.getErrorMessage(), string);
+			
+	}
+
+
+
 }
