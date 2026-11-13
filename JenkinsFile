@@ -1,49 +1,99 @@
 
 pipeline {
+
     agent any
 
     options {
         timestamps()
-        timeout(time: 30, unit: 'MINUTES')
+        timeout(time: 45, unit: 'MINUTES')
         buildDiscarder(logRotator(numToKeepStr: '10'))
+        disableConcurrentBuilds()
+    }
+
+    environment {
+        PROJECT_NAME = 'selenium-cucumber_BDD'
+        MAVEN_OPTS = '-Xmx1024m'
     }
 
     stages {
 
+        // 1. Recuperation du projet GitHub
         stage('Checkout') {
             steps {
-                echo 'Checking out source code...'
-                checkout scm
+                echo 'Checking out source code from GitHub...'
+
+                git branch: 'master',
+                    url: 'https://github.com/taleb-wiem/selenium-cucumber_BDD.git'
             }
         }
 
+        // 2. Verification de l'environnement
+        stage('Environment Setup') {
+            steps {
+                echo 'Checking Java and Maven versions...'
+
+                bat 'java -version'
+                bat 'mvn -version'
+            }
+        }
+
+        // 3. Compilation du projet
         stage('Build') {
             steps {
-                echo 'Building project...'
-                sh 'mvn clean compile -DskipTests'
+                echo 'Building Selenium Cucumber project...'
+
+                bat 'mvn -B clean test-compile'
             }
         }
 
-        stage('Run Selenium Cucumber Tests') {
+        // 4. Execution des tests automatises
+        stage('Selenium Cucumber Tests') {
             steps {
-                echo 'Running Selenium and Cucumber tests...'
-                sh 'mvn test'
+                echo 'Running Selenium WebDriver and Cucumber BDD tests...'
+
+                bat 'mvn -B test'
+            }
+        }
+
+        // 5. Publication des resultats
+        stage('Publish Test Results') {
+            steps {
+                echo 'Publishing JUnit test reports...'
+
+                junit(
+                    testResults: '**/target/surefire-reports/*.xml',
+                    allowEmptyResults: true
+                )
             }
         }
     }
 
     post {
+
         always {
-            junit testResults: '**/target/surefire-reports/*.xml',
-                  allowEmptyResults: true
+            echo 'Archiving test reports...'
+
+            archiveArtifacts(
+                artifacts: '**/target/surefire-reports/**, **/target/cucumber-reports/**',
+                allowEmptyArchive: true
+            )
         }
 
         success {
-            echo 'Pipeline executed successfully!'
+            echo 'SUCCESS: Selenium Cucumber pipeline completed!'
         }
 
         failure {
-            echo 'Pipeline failed. Check Console Output.'
+            echo 'FAILURE: Pipeline execution failed!'
+            echo 'Please check Jenkins Console Output.'
+        }
+
+        unstable {
+            echo 'WARNING: Pipeline is unstable.'
+        }
+
+        cleanup {
+            echo 'Pipeline execution finished.'
         }
     }
 }
